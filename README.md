@@ -6,7 +6,9 @@ Windows and macOS.
 ## Project status
 
 Phases 0 through 5 are implemented at the initial vertical-slice level.
-SketchUp runtime testing and platform packaging validation are still pending.
+The general model API now also supports bounded nested traversal, entity
+search, and creation of materials and tags. SketchUp runtime testing and
+platform packaging validation are still pending.
 The agreed architecture is:
 
 ```text
@@ -34,6 +36,22 @@ The bridge will:
 - Use explicit `{ "value": number, "unit": "..." }` dimensions.
 - Require preview and explicit execution for destructive operations.
 - Never execute arbitrary Ruby received from an AI client.
+
+### Current model API
+
+The MCP surface currently supports:
+
+- Model status, summaries, units, selections, materials, tags, scenes, and
+  active-view inspection.
+- Bounded top-level and nested group/component traversal.
+- Entity search by name, type, material, or tag.
+- Box, cylinder, and group creation, translation, guarded deletion, material
+  assignment, tag assignment, material creation, and tag creation.
+- Scene and camera operations, previews, explicit execution, and undo.
+
+The API is intentionally allowlisted. Architectural objects, advanced
+geometry, import/export, annotations, and batch automation should be added as
+separate validated operations rather than by exposing arbitrary Ruby.
 
 ## Local development documentation
 

@@ -90,7 +90,7 @@ module SketchupMcp
       offset = Integer(arguments.fetch('offset', 0))
       raise BridgeError.new('INVALID_ARGUMENT', 'Offset must be zero or greater') if offset.negative?
 
-      entities = active_model.entities.to_a
+      entities = entities_for_container(arguments['container_ref'])
       type_filter = arguments['entity_types']
       unless type_filter.nil?
         raise BridgeError.new('INVALID_ARGUMENT', 'entity_types must be an array') unless type_filter.is_a?(Array)
@@ -107,6 +107,34 @@ module SketchupMcp
       }
     rescue ArgumentError
       raise BridgeError.new('INVALID_ARGUMENT', 'Offset must be an integer')
+    end
+
+    def entity_children(arguments)
+      entity = resolve_entity(arguments['entity_ref'])
+      raise BridgeError.new('INVALID_ARGUMENT', 'Entity does not contain child entities') unless child_entities(entity)
+
+      list_entities(
+        'container_ref' => arguments['entity_ref'],
+        'limit' => arguments['limit'],
+        'offset' => arguments.fetch('offset', 0),
+        'entity_types' => arguments['entity_types']
+      )
+    end
+
+    def search_entities(arguments)
+      query = arguments['query'].to_s.strip.downcase
+      raise BridgeError.new('INVALID_ARGUMENT', 'query must be a non-empty string') if query.empty?
+
+      limit = bounded_limit(arguments['limit'])
+      recursive = arguments.fetch('recursive', true) == true
+      results = []
+      search_in_entities(entities_for_container(arguments['container_ref']), query, recursive, results, limit)
+      {
+        'query' => query,
+        'entities' => results,
+        'limit' => limit,
+        'truncated' => results.length >= limit
+      }
     end
 
     def materials
@@ -165,17 +193,14 @@ module SketchupMcp
       raise BridgeError.new('INVALID_ARGUMENT', 'Limit must be an integer')
     end
 
-    def resolve_entity(reference)
-      resolve_entity(reference)
-    end
-
     def entity_summary(entity, detailed = false)
       reference = reference_for(entity)
       result = {
         'entity_ref' => reference,
         'type' => entity_type(entity),
         'name' => entity.respond_to?(:name) ? entity.name.to_s : nil,
-        'bounds' => bounds(entity.bounds)
+        'bounds' => bounds(entity.bounds),
+        'children_count' => child_entities(entity)&.length || 0
       }
       if detailed
         result['persistent_id'] = entity.persistent_id if entity.respond_to?(:persistent_id)
@@ -230,6 +255,47 @@ module SketchupMcp
         'component_instances' => entities.grep(Sketchup::ComponentInstance).length,
         'images' => entities.grep(Sketchup::Image).length
       }
+    end
+
+    def entities_for_container(reference)
+      return active_model.entities.to_a if reference.nil?
+
+      entity = resolve_entity(reference)
+      entities = child_entities(entity)
+      raise BridgeError.new('INVALID_ARGUMENT', 'Container does not contain child entities') unless entities
+
+      entities.to_a
+    end
+
+    def search_in_entities(entities, query, recursive, results, limit)
+      entities.each do |entity|
+        break if results.length >= limit
+
+        if searchable_entity?(entity, query)
+          results << entity_summary(entity, true)
+        end
+        nested_entities = child_entities(entity)
+        if recursive && nested_entities && results.length < limit
+          search_in_entities(nested_entities.to_a, query, recursive, results, limit)
+        end
+      end
+    end
+
+    def child_entities(entity)
+      return entity.entities if entity.respond_to?(:entities)
+      return entity.definition.entities if entity.respond_to?(:definition) && entity.definition
+
+      nil
+    end
+
+    def searchable_entity?(entity, query)
+      values = [
+        entity.respond_to?(:name) ? entity.name : nil,
+        entity.respond_to?(:layer) && entity.layer ? entity.layer.name : nil,
+        entity.respond_to?(:material) && entity.material ? entity.material.name : nil,
+        entity_type(entity)
+      ]
+      values.compact.any? { |value| value.to_s.downcase.include?(query) }
     end
 
   end

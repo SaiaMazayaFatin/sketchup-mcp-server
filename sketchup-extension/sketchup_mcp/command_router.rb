@@ -30,6 +30,10 @@ module SketchupMcp
         @model_reader.entity_details(arguments)
       when 'list_entities'
         @model_reader.list_entities(arguments)
+      when 'get_entity_children'
+        @model_reader.entity_children(arguments)
+      when 'search_entities'
+        @model_reader.search_entities(arguments)
       when 'list_materials'
         @model_reader.materials
       when 'list_tags'
@@ -50,6 +54,10 @@ module SketchupMcp
         @material_commands.apply_material(arguments)
       when 'set_entity_tag'
         @material_commands.set_entity_tag(arguments)
+      when 'create_material'
+        @material_commands.create_material(arguments)
+      when 'create_tag'
+        @material_commands.create_tag(arguments)
       when 'get_active_view'
         @scene_commands.active_view
       when 'create_scene'
@@ -68,7 +76,7 @@ module SketchupMcp
     end
 
     def previewable?(operation)
-      %w[create_box create_cylinder create_group transform_entities delete_entities apply_material set_entity_tag create_scene set_camera].include?(operation)
+      %w[create_box create_cylinder create_group transform_entities delete_entities apply_material set_entity_tag create_material create_tag create_scene set_camera].include?(operation)
     end
 
     def destructive?(operation)
@@ -90,6 +98,10 @@ module SketchupMcp
         { 'created_count' => 1, 'created_type' => 'Group', 'description' => 'Create a grouped cylinder' }
       when 'create_group'
         { 'created_count' => 1, 'created_type' => 'Group', 'description' => 'Create an empty group' }
+      when 'create_material'
+        { 'created_count' => 1, 'created_type' => 'Material', 'description' => 'Create a model material' }
+      when 'create_tag'
+        { 'created_count' => 1, 'created_type' => 'Layer', 'description' => 'Create a model tag' }
       else
         { 'description' => operation }
       end

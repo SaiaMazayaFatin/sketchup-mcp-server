@@ -30,9 +30,40 @@ export const inspectionTools = [
     inputSchema: {
       type: "object",
       properties: {
+        container_ref: { type: "string", minLength: 1 },
         limit: { type: "integer", minimum: 1, maximum: 500 },
         offset: { type: "integer", minimum: 0 },
         entity_types: { type: "array", items: { type: "string" }, uniqueItems: true },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "get_entity_children",
+    description: "List bounded child entities inside a group or component instance.",
+    inputSchema: {
+      type: "object",
+      required: ["entity_ref"],
+      properties: {
+        entity_ref: { type: "string", minLength: 1 },
+        limit: { type: "integer", minimum: 1, maximum: 500 },
+        offset: { type: "integer", minimum: 0 },
+        entity_types: { type: "array", items: { type: "string" }, uniqueItems: true },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "search_entities",
+    description: "Search bounded model entities by name, type, material, or tag.",
+    inputSchema: {
+      type: "object",
+      required: ["query"],
+      properties: {
+        query: { type: "string", minLength: 1 },
+        container_ref: { type: "string", minLength: 1 },
+        recursive: { type: "boolean", default: true },
+        limit: { type: "integer", minimum: 1, maximum: 500 },
       },
       additionalProperties: false,
     },
@@ -151,6 +182,39 @@ export const presentationTools = [
         entity_ref: { type: "string", minLength: 1 },
         tag_name: { type: "string", minLength: 1 },
       },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "create_material",
+    description: "Create a named model material, optionally with an RGBA color.",
+    inputSchema: {
+      type: "object",
+      required: ["name"],
+      properties: {
+        name: { type: "string", minLength: 1 },
+        color: {
+          type: "object",
+          required: ["red", "green", "blue"],
+          properties: {
+            red: { type: "integer", minimum: 0, maximum: 255 },
+            green: { type: "integer", minimum: 0, maximum: 255 },
+            blue: { type: "integer", minimum: 0, maximum: 255 },
+            alpha: { type: "integer", minimum: 0, maximum: 255, default: 255 },
+          },
+          additionalProperties: false,
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "create_tag",
+    description: "Create a named model tag.",
+    inputSchema: {
+      type: "object",
+      required: ["name"],
+      properties: { name: { type: "string", minLength: 1 } },
       additionalProperties: false,
     },
   },
