@@ -1,5 +1,11 @@
 # Phase 2: Read-Only Inspection
 
+## Status
+
+**Initial implementation in progress.** The read-only MCP tools and bounded
+SketchUp model reader are implemented. Runtime validation inside SketchUp is
+still pending.
+
 ## Purpose
 
 Provide reliable model understanding before any editing operation is enabled.
@@ -105,4 +111,3 @@ Test models:
 
 An agent can inspect a model, understand its units and structure, and plan a
 change without requiring write access.
-

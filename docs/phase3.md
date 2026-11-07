@@ -1,5 +1,14 @@
 # Phase 3: Basic Geometry Operations
 
+## Status
+
+**Initial implementation in progress.** Grouped box, cylinder, and empty-group
+creation, translation, and guarded deletion are implemented. Runtime validation
+inside SketchUp remains pending.
+
+Coordinates default to millimeters at the bridge boundary and can specify
+`mm`, `cm`, `m`, `in`, or `ft` through the corresponding `*_unit` argument.
+
 ## Purpose
 
 Enable safe creation and transformation of basic SketchUp geometry.
@@ -106,4 +115,3 @@ Every write operation should include:
 
 The system can perform small, predictable geometry operations while preserving
 model integrity and a usable SketchUp undo history.
-

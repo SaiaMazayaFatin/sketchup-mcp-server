@@ -1,5 +1,12 @@
 # Phase 1: Connectivity
 
+## Status
+
+**Implementation complete for the initial vertical slice.** The MCP server and
+SketchUp extension bridge are implemented. Runtime validation inside SketchUp
+2024 on Windows and macOS remains a manual test because SketchUp is not
+available in this development environment.
+
 ## Purpose
 
 Create the smallest complete path from Claude Code or Codex to a running
@@ -96,4 +103,3 @@ Do not implement arbitrary Ruby execution or geometry editing in this phase.
 
 The complete client-to-SketchUp path is stable enough to support read-only
 inspection work in Phase 2.
-
