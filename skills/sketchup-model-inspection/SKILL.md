@@ -1,34 +1,32 @@
+---
+name: sketchup-model-inspection
+description: "Inspect and understand existing SketchUp models without changing them. Use for model summaries, entity counts, bounds, selection, units, materials, tags, scenes, inventories, and answering questions about model contents."
+argument-hint: "Describe what model information or entity inventory you need."
+---
+
 # SketchUp Model Inspection
 
-Use this Skill for read-only analysis of a SketchUp model.
+## Use when
 
-## Workflow
+- The user asks what is in a model.
+- The user wants counts, bounds, units, selected entities, materials, tags,
+  scenes, names, or entity details.
+- The user asks for analysis before deciding whether to edit the model.
 
-1. Check the SketchUp connection.
-2. Read the model summary and units.
-3. Inspect the active selection if relevant.
-4. Use bounded entity queries with an explicit limit.
-5. Request details only for relevant entity references.
-6. Inspect materials, tags, and scenes as separate resources.
-7. Report what was observed and identify any bounded or unavailable data.
+## Procedure
 
-## Rules
+1. Call `ping_sketchup` or `get_sketchup_status`.
+2. Call `get_model_summary` and `get_model_units`.
+3. Inspect `get_selection` when selection is relevant.
+4. Use `list_entities` with a limit and type filter.
+5. Use `get_entity_details` only for relevant references.
+6. Read materials, tags, and scenes separately.
+7. State limits, stale references, unavailable data, and uncertainty.
 
-- Do not mutate the model.
-- Do not infer geometry that was not returned by an inspection tool.
-- Treat entity references as valid only for the current bridge session.
-- Prefer summaries and filtered pages for large models.
-- Never describe a partial listing as a complete model inventory.
-- If an entity reference becomes stale, refresh the model summary or listing.
+## Invariants
 
-## Useful tools
-
-- `get_sketchup_status`
-- `get_model_summary`
-- `get_model_units`
-- `get_selection`
-- `get_entity_details`
-- `list_entities`
-- `list_materials`
-- `list_tags`
-- `list_scenes`
+- Inspection is read-only: do not call mutation tools.
+- Do not infer geometry that tools did not return.
+- Never describe a bounded page as a complete inventory.
+- Refresh session-scoped references after reconnecting.
+- Prefer summaries before large listings.

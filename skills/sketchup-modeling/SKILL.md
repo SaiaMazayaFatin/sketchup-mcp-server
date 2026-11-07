@@ -1,35 +1,46 @@
+---
+name: sketchup-modeling
+description: "Create and modify SketchUp geometry safely. Use for modeling, architectural massing, boxes, cylinders, groups, components, transforms, materials, tags, scenes, camera changes, and deleting or organizing entities."
+argument-hint: "Describe the model change, dimensions, units, and target entities."
+---
+
 # SketchUp Modeling
 
-## Core workflow
+## Use when
 
-1. Inspect the active model before making changes.
-2. Confirm the model units and coordinate assumptions.
-3. Prefer groups and components over loose geometry.
-4. Preserve existing names, tags, materials, and organization unless a change
-   is explicitly requested.
-5. Use small, undoable operations.
-6. Preview destructive or broad changes before execution.
-7. Verify the resulting model after every mutation.
+- The user wants to create, edit, move, transform, organize, or delete model
+  entities.
+- The request involves geometry, groups, components, materials, tags, scenes,
+  or cameras.
+- A read-only inspection is needed before a planned mutation.
 
-## Inspection rules
+## Procedure
 
-- Start with `get_sketchup_status` or `get_model_summary`.
-- Use `get_model_units` before interpreting dimensions.
-- Use `get_selection` when the request refers to selected objects.
-- Use bounded listing tools instead of requesting the entire model.
-- Treat entity references as session-scoped and refresh them after reconnecting.
+1. Check `get_sketchup_status`.
+2. Read `get_model_summary` and `get_model_units`.
+3. Use `get_selection` when the request refers to selected objects.
+4. Clarify missing dimensions, units, coordinate origin, or target scope.
+5. Prefer existing groups, components, materials, and tags.
+6. Use grouped geometry and explicit unit objects.
+7. Preview deletion, destructive changes, and broad operations.
+8. Execute the smallest safe operation.
+9. Re-read the affected entities and verify bounds, names, tags, and materials.
 
-## Materials, tags, and views
+## Tool selection
 
-- Inspect existing materials and tags before assigning them.
-- Reuse existing materials rather than creating duplicates.
-- Assign tags to groups or components instead of loose geometry where possible.
-- Treat scene and camera changes as presentation changes, but still verify them.
-- Preserve existing scene names and settings unless a change is requested.
+- Basic solids: `create_box`, `create_cylinder`.
+- Containers: `create_group`.
+- Translation: `transform_entities`.
+- Existing materials/tags: `apply_material`, `set_entity_tag`.
+- Views: `get_active_view`, `create_scene`, `set_camera`.
+- Destructive changes: `preview_operation`, then `execute_operation`.
+- Recovery: `undo_last_operation`.
 
-## Safety rules
+## Invariants
 
-- Never request or execute arbitrary Ruby code.
-- Do not delete, explode, or purge model content without explicit authorization.
-- Do not assume a numeric dimension's unit.
-- Report incomplete or bounded results honestly.
+- Never execute arbitrary Ruby.
+- Never assume a numeric value's unit.
+- Do not delete without explicit authorization and confirmation.
+- Keep operations undoable and bounded.
+- Treat entity references as valid only for the current bridge session.
+- Report incomplete results and operation errors explicitly.
