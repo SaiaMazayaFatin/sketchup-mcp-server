@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/sketchup-mcp/messages.schema.json",
+  "title": "SketchUp MCP bridge messages",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/successResponse"
+    },
+    {
+      "$ref": "#/$defs/errorResponse"
+    }
+  ],
+  "$defs": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_version",
+        "request_id",
+        "operation",
+        "auth_token",
+        "arguments"
+      ],
+      "properties": {
+        "protocol_version": {
+          "const": 1
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "operation": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "auth_token": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 256
+        },
+        "arguments": {
+          "type": "object"
+        }
+      }
+    },
+    "successResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_version",
+        "request_id",
+        "success",
+        "result"
+      ],
+      "properties": {
+        "protocol_version": {
+          "const": 1
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "success": {
+          "const": true
+        },
+        "result": {}
+      }
+    },
+    "errorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_version",
+        "request_id",
+        "success",
+        "error"
+      ],
+      "properties": {
+        "protocol_version": {
+          "const": 1
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "success": {
+          "const": false
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "INVALID_ENVELOPE",
+            "UNSUPPORTED_PROTOCOL",
+            "UNAUTHENTICATED",
+            "UNAUTHORIZED_OPERATION",
+            "INVALID_ARGUMENT",
+            "NOT_CONNECTED",
+            "MODEL_NOT_READY",
+            "STALE_REFERENCE",
+            "LIMIT_EXCEEDED",
+            "CONFLICT",
+            "OPERATION_FAILED",
+            "OPERATION_TIMEOUT",
+            "UNKNOWN_COMPLETION",
+            "INTERNAL_ERROR"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "details": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
