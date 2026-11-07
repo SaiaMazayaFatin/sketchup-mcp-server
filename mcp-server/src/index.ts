@@ -179,6 +179,98 @@ const geometryTools = [
   },
 ] as const;
 
+const presentationTools = [
+  {
+    name: "apply_material",
+    description: "Apply an existing material to a referenced entity.",
+    inputSchema: {
+      type: "object",
+      required: ["entity_ref", "material_name"],
+      properties: {
+        entity_ref: { type: "string", minLength: 1 },
+        material_name: { type: "string", minLength: 1 },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "set_entity_tag",
+    description: "Assign an existing tag to a referenced entity.",
+    inputSchema: {
+      type: "object",
+      required: ["entity_ref", "tag_name"],
+      properties: {
+        entity_ref: { type: "string", minLength: 1 },
+        tag_name: { type: "string", minLength: 1 },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "get_active_view",
+    description: "Return the active SketchUp camera and viewport.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+  {
+    name: "create_scene",
+    description: "Create a named scene from the current view.",
+    inputSchema: {
+      type: "object",
+      required: ["name"],
+      properties: { name: { type: "string", minLength: 1 } },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "set_camera",
+    description: "Set the active SketchUp camera using position, target, and up vectors.",
+    inputSchema: {
+      type: "object",
+      required: ["position", "target"],
+      properties: {
+        position: { type: "array", prefixItems: [{ type: "number" }, { type: "number" }, { type: "number" }], items: false },
+        target: { type: "array", prefixItems: [{ type: "number" }, { type: "number" }, { type: "number" }], items: false },
+        up: { type: "array", prefixItems: [{ type: "number" }, { type: "number" }, { type: "number" }], items: false },
+      },
+      additionalProperties: false,
+    },
+  },
+] as const;
+
+const operationTools = [
+  {
+    name: "preview_operation",
+    description: "Preview a write operation without changing the model.",
+    inputSchema: {
+      type: "object",
+      required: ["operation", "arguments"],
+      properties: {
+        operation: { type: "string", minLength: 1 },
+        arguments: { type: "object" },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "execute_operation",
+    description: "Execute a valid preview; destructive previews require confirm=true.",
+    inputSchema: {
+      type: "object",
+      required: ["preview_id"],
+      properties: {
+        preview_id: { type: "string", minLength: 1 },
+        confirm: { type: "boolean" },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "undo_last_operation",
+    description: "Undo the last completed SketchUp operation.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+] as const;
+
 class BridgeClient {
   private socket: Socket | undefined;
   private buffer = "";
@@ -370,6 +462,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     },
     ...inspectionTools,
     ...geometryTools,
+    ...presentationTools,
+    ...operationTools,
   ],
 }));
 
@@ -380,6 +474,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     "get_sketchup_status",
     ...inspectionTools.map((tool) => tool.name),
     ...geometryTools.map((tool) => tool.name),
+    ...presentationTools.map((tool) => tool.name),
+    ...operationTools.map((tool) => tool.name),
   ]);
   if (!knownTools.has(toolName)) {
     return {

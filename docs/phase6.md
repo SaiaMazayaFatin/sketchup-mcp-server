@@ -1,5 +1,12 @@
 # Phase 6: Packaging, Compatibility, and Release
 
+## Status
+
+**Initial packaging implementation complete.** Repeatable `.rbz` packaging,
+version metadata, and installation/client setup documentation are available.
+Windows and macOS SketchUp runtime compatibility is still pending manual
+testing.
+
 ## Purpose
 
 Turn the development implementation into an installable, documented, and
@@ -85,4 +92,3 @@ Create or update:
 
 The project has a repeatable installation, documented compatibility, and a
 release process suitable for continued development and user testing.
-

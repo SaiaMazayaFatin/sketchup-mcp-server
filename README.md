@@ -5,7 +5,9 @@ Windows and macOS.
 
 ## Project status
 
-Phase 0 is complete. The agreed architecture is:
+Phases 0 through 5 are implemented at the initial vertical-slice level.
+SketchUp runtime testing and platform packaging validation are still pending.
+The agreed architecture is:
 
 ```text
 Claude Code / Codex
@@ -38,10 +40,16 @@ The bridge will:
 - [Overall planning](docs/planning.md)
 - [Phase 0: confirmed constraints and decisions](docs/phase0.md)
 - [Phase 1: connectivity](docs/phase1.md)
+- [Phase 2: read-only inspection](docs/phase2.md)
+- [Phase 3: geometry operations](docs/phase3.md)
+- [Phase 4: materials and scenes](docs/phase4.md)
+- [Phase 5: preview and recovery](docs/phase5.md)
+- [Phase 6: packaging and release](docs/phase6.md)
+- [Installation and client setup](docs/installation.md)
 - [Protocol message schema](protocol/messages.schema.json)
 - [Protocol operation schema](protocol/operations.schema.json)
 
 ## Next step
 
-Begin Phase 1 by implementing the authenticated bridge, MCP stdio server, and
-the `ping_sketchup` and `get_sketchup_status` tools.
+Next, validate the extension inside SketchUp 2024 on Windows and macOS, then
+package and test the `.rbz` release.

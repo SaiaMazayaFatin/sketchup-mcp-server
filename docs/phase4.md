@@ -1,5 +1,11 @@
 # Phase 4: Materials and Scenes
 
+## Status
+
+**Initial implementation in progress.** Material application, tag assignment,
+active-view inspection, scene creation, and camera updates are implemented.
+Runtime validation inside SketchUp remains pending.
+
 ## Purpose
 
 Add presentation and organization capabilities without weakening the safety
@@ -92,4 +98,3 @@ Implement:
 Agents can prepare a model for basic presentation and organization while
 preserving existing materials, tags, scenes, and camera settings unless a
 change is explicitly requested.
-

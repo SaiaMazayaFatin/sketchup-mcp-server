@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "start": "node --enable-source-maps dist/index.js"
+    "start": "node --enable-source-maps dist/index.js",
+    "package:extension": "powershell -NoProfile -ExecutionPolicy Bypass -File ../scripts/package-extension.ps1"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0"

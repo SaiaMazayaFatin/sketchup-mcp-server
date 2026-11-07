@@ -19,6 +19,14 @@
 - Use bounded listing tools instead of requesting the entire model.
 - Treat entity references as session-scoped and refresh them after reconnecting.
 
+## Materials, tags, and views
+
+- Inspect existing materials and tags before assigning them.
+- Reuse existing materials rather than creating duplicates.
+- Assign tags to groups or components instead of loose geometry where possible.
+- Treat scene and camera changes as presentation changes, but still verify them.
+- Preserve existing scene names and settings unless a change is requested.
+
 ## Safety rules
 
 - Never request or execute arbitrary Ruby code.

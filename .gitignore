@@ -2,3 +2,4 @@ docs/
 mcp-server/node_modules/
 mcp-server/dist/
 /package-lock.json
+dist/

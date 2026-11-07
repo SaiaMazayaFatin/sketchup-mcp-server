@@ -1,5 +1,11 @@
 # Phase 5: Preview, Confirmation, and Recovery
 
+## Status
+
+**Initial implementation in progress.** Session-bound previews, explicit
+execution, delete confirmation, and last-operation undo are implemented.
+Runtime validation inside SketchUp remains pending.
+
 ## Purpose
 
 Make multi-step and destructive changes understandable, reviewable, and
@@ -104,4 +110,3 @@ Read-only and small reversible changes may execute directly if configured.
 
 The integration can support realistic workflows without allowing an agent to
 make opaque, irreversible, or unexpectedly broad changes.
-
